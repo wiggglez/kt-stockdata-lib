@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm' version '1.8.21'}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+dependencies {
+
+    // OkHttp
+    api 'com.squareup.okhttp3:okhttp:5.0.0-alpha.2'
+
+    // Gson
+    api 'com.google.code.gson:gson:2.9.1'
+
+    // Jsoup
+    api 'org.jsoup:jsoup:1.13.1'
+
+    // TA Lib
+    api 'com.tictactec:ta-lib:0.4.0'
+
+    // Coroutines
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'com.github.wiggglez'
+            artifactId 'kt-stockdata-lib'
+            version '1.0'
+            from components.java
+        }
+    }
+}
