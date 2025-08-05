@@ -13,5 +13,5 @@ internal data class Quote(
     @SerializedName("open")
     val `open`: List<Double?>,
     @SerializedName("volume")
-    val volume: List<Int?>
+    val volume: List<Long?>
 )

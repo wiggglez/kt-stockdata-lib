@@ -15,6 +15,22 @@ import java.util.*
 import kotlin.coroutines.coroutineContext
 
 
+
+
+// TODO -- Its quittin time and i just stepped in a pile of Shite...
+//      Tried to get a 5m AdvancedStockChart in 'tradebot' and got an error
+//      saying that 24524524352452 (not really but similar) was too big to be an Int.
+//      So basically I have to go through this whole project and replace the
+//      volume: Int with volume: Long which is a nightmare...
+//      I honestly think I should just write a YaFinChartsKt project lib where
+//      The only purpose of the lib is to get charts as simply as possible
+//      I can copy paste what i need from here and it'll be useful
+//
+//      TODO -- IMPORTANT
+//          VERIFY That Yahoo Fin hasn't cockblocked you and is limiting/ giving old data!!!!
+//          We need up-to-date real time chart data
+
+
 /**
  * Retrieves Historical Stock Data from Yahoo Finance in the form of...
  *
@@ -63,7 +79,7 @@ class HistoricChartData : IHistoricChartData {
             close = removeNullValuesFromDoublesList(
                 history.chart.result[0].indicators.quote[0].close
             ),
-            volume = removeNullValuesFromIntList(
+            volume = removeNullValuesFromLongsList(
                 history.chart.result[0].indicators.quote[0].volume
             )
         )
@@ -110,7 +126,7 @@ class HistoricChartData : IHistoricChartData {
             close = removeNullValuesFromDoublesList(
                 history.chart.result[0].indicators.quote[0].close
             ),
-            volume = removeNullValuesFromIntList(
+            volume = removeNullValuesFromLongsList(
                 history.chart.result[0].indicators.quote[0].volume
             )
         )
@@ -177,7 +193,7 @@ class HistoricChartData : IHistoricChartData {
             close = removeNullValuesFromDoublesList(
                 history.chart.result[0].indicators.quote[0].close
             ),
-            volume = removeNullValuesFromIntList(
+            volume = removeNullValuesFromLongsList(
                 history.chart.result[0].indicators.quote[0].volume
             )
         )
@@ -246,7 +262,7 @@ class HistoricChartData : IHistoricChartData {
             close = removeNullValuesFromDoublesList(
                 history.chart.result[0].indicators.quote[0].close
             ),
-            volume = removeNullValuesFromIntList(
+            volume = removeNullValuesFromLongsList(
                 history.chart.result[0].indicators.quote[0].volume
             )
         )
@@ -467,7 +483,7 @@ class HistoricChartData : IHistoricChartData {
                 removeNullValuesFromDoublesList(high),
                 removeNullValuesFromDoublesList(low),
                 removeNullValuesFromDoublesList(close),
-                removeNullValuesFromIntList(volume)
+                removeNullValuesFromLongsList(volume)
             )
         } else if (t == SimpleStockChart::class.java) {
             return SimpleStockChart(
@@ -476,7 +492,7 @@ class HistoricChartData : IHistoricChartData {
                 removeNullValuesFromDoublesList(high),
                 removeNullValuesFromDoublesList(low),
                 removeNullValuesFromDoublesList(close),
-                removeNullValuesFromIntList(volume)
+                removeNullValuesFromLongsList(volume)
             )
         }
         return null
@@ -486,7 +502,7 @@ class HistoricChartData : IHistoricChartData {
     /**
      * Takes list of Epoch Seconds Timestamp <Int> and converts to Date objects
      */
-    private fun convertTimestampsToDatetime(tsList: List<Int>): List<Date> {
+    private fun convertTimestampsToDatetime(tsList: List<Long>): List<Date> {
         val dtList = mutableListOf<Date>()
 
         for (ts in tsList) {
@@ -521,51 +537,48 @@ class HistoricChartData : IHistoricChartData {
     /**
      * Replaces Null values with 0.0.
      */
-    private fun removeNullValuesFromDoublesList(l: List<Double?>): List<Double> {
+    private fun removeNullValuesFromDoublesList(input: List<Double?>): List<Double> {
 
 
-        val newList = mutableListOf<Double>()
-        l.forEach {
-            if (it == null) {
-                newList.add(l.random() ?: 0.0)
-            } else {
-                newList.add(it)
+        val result = input.toMutableList()
+
+        for (i in result.indices.reversed()) {
+            if (result[i] == null) {
+                // Find the next non-null value (after i)
+                val nextValue = result.subList(i + 1, result.size).firstOrNull { it != null }
+                if (nextValue != null) {
+                    result[i] = nextValue
+                } else {
+                    // If no next value, fallback (you could choose to remove it or leave it as null)
+                    result[i] = 0.0  // or throw exception / return empty
+                }
             }
         }
-        return newList
+
+        return result.map { it!! } // All nulls should be filled at this point
     }
 
 
     /**
      * Replaces Null values with a neighboring value.
      */
-    private fun removeNullValuesFromIntList(l: List<Int?>): List<Int> {
-        val newList = mutableListOf<Int>()
-        l.forEachIndexed { index, it ->
+    private fun removeNullValuesFromLongsList(input: List<Long?>): List<Long> {
 
-            if (it == null) {
+        val result = input.toMutableList()
 
-                val newValue = when (index) {
-                    0 -> {
-                        1
-                    }
-
-                    l.lastIndex -> {
-                        l.lastIndex - 1
-                    }
-
-                    else -> {
-                        index + 1
-                    }
+        for (i in result.indices.reversed()) {
+            if (result[i] == null) {
+                // Find the next non-null value (after i)
+                val nextValue = result.subList(i + 1, result.size).firstOrNull { it != null }
+                if (nextValue != null) {
+                    result[i] = nextValue
+                } else {
+                    // If no next value, fallback (you could choose to remove it or leave it as null)
+                    result[i] = 0  // or throw exception / return empty
                 }
-
-                newList.add(newValue)
-            } else {
-
-                newList.add(it)
-
             }
         }
-        return newList
+
+        return result.map { it!! } // All nulls should be filled at this point
     }
 }

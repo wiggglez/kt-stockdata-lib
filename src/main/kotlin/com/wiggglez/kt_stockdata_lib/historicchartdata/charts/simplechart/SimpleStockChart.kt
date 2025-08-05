@@ -16,12 +16,12 @@ class SimpleStockChart(
     periodRange: String,
     prepost: Boolean,
     datetime: List<Date>,
-    timestamp: List<Int>,
+    timestamp: List<Long>,
     open: List<Double>,
     high: List<Double>,
     low: List<Double>,
     close: List<Double>,
-    volume: List<Int>
+    volume: List<Long>
 ) : StockChartBase(
     ticker = ticker,
     interval = interval,

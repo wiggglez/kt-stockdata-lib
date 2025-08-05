@@ -9,5 +9,5 @@ internal data class Result(
     @SerializedName("meta")
     val meta: Meta,
     @SerializedName("timestamp")
-    val timestamp: List<Int>
+    val timestamp: List<Long>
 )

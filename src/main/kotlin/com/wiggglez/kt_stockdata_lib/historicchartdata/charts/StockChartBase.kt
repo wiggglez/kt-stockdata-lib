@@ -9,12 +9,12 @@ abstract class StockChartBase(
     val periodRange: String,
     val prepost: Boolean,
     val datetime: List<Date>,
-    val timestamp: List<Int>,
+    val timestamp: List<Long>,
     val open: List<Double>,
     val high: List<Double>,
     val low: List<Double>,
     val close: List<Double>,
-    val volume: List<Int>
+    val volume: List<Long>
 ) {
 
     val lastIndex = open.lastIndex
@@ -53,11 +53,11 @@ abstract class StockChartBase(
         return close.subList(findTrueIndex(startIndex), findTrueIndex(endIndex) + 1)
     }
 
-    fun getVolumeAtIndex(i: Int): Int {
+    fun getVolumeAtIndex(i: Int ): Long {
         return volume[findTrueIndex(i)]
     }
 
-    fun getSublistOfVolume(startIndex: Int, endIndex: Int): List<Int> {
+    fun getSublistOfVolume(startIndex: Int, endIndex: Int): List<Long> {
         return volume.subList(findTrueIndex(startIndex), findTrueIndex(endIndex) + 1)
     }
 
@@ -69,11 +69,11 @@ abstract class StockChartBase(
         return datetime.subList(findTrueIndex(startIndex), findTrueIndex(endIndex) + 1)
     }
 
-    fun getTimestampAtIndex(i: Int): Int {
+    fun getTimestampAtIndex(i: Int): Long {
         return timestamp[findTrueIndex(i)]
     }
 
-    fun getSublistOfTimestamp(startIndex: Int, endIndex: Int): List<Int> {
+    fun getSublistOfTimestamp(startIndex: Int, endIndex: Int): List<Long> {
         return timestamp.subList(findTrueIndex(startIndex), findTrueIndex(endIndex) + 1)
     }
 
